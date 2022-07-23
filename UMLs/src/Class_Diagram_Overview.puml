@@ -1,0 +1,9 @@
+@startuml
+'https://plantuml.com/class-diagram
+namespace charController{
+    interface BaseState
+    {
+        void Move(ref Player)
+    }
+}
+@enduml
