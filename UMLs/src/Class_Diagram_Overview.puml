@@ -1,9 +1,70 @@
 @startuml
 'https://plantuml.com/class-diagram
+
+namespace Unity{
+    class BoxCollider2D
+    {
+        info from boxCollider2d on the game object
+    }
+}
+
+namespace collision{
+
+    class CollisionDetection
+    {
+        implementaion of the collision detection
+        + CastIfGrounded(): RaycastHit2D
+    }
+}
+
 namespace charController{
-    interface BaseState
+
+    class CharacterController
+    {
+        + move(displacement, BoxCollider2D): void
+        diffrent states for the collision detection
+        + grounded collision
+        + airbord collision etc.
+    }
+
+    class PlayerController
+    {
+        should have readonly access to states
+        and stuff like isGrouned variables
+    }
+
+    interface BaseCharacterState
     {
         void Move(ref Player)
     }
+
+    CharacterController -* Unity.BoxCollider2D
+    PlayerController -|> CharacterController
+
 }
+
+charController.CharacterController ---> collision.CollisionDetection
+charController.CharacterController --* charController.BaseCharacterState
+
+
+@enduml
+
+@startuml
+
+namespace Unity{
+
+}
+
+namespace actorCollision{
+    class CollisionInfo {}
+    class CollisionDetection 
+    {
+        + collisionInfo: CollisionInfo - readonly
+    }
+
+    CollisionDetection *- CollisionInfo
+}
+
+
+
 @enduml
