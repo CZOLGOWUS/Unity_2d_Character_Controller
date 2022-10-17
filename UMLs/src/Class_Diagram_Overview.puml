@@ -25,6 +25,11 @@ namespace actorController{
 note right of ActorController::List<IDisplace&>
     reset on every state Update()
 end note
+
+note right of ActorController::OnGameUpdate
+    Calls the state's Update() and Collision detection
+    after that actually moves the actor
+end note
 /' --------- NOTES ----------- '/
 
     class ActorController
