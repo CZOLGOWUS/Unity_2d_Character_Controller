@@ -1,61 +1,15 @@
-@startuml
-'https://plantuml.com/class-diagram
-
+@startuml class_overview
+component ActorObject{
 namespace Unity{
-    class BoxCollider2D
+    class BoxCollider2D{}
+    class InputSystem 
     {
-        info from boxCollider2d on the game object
+        "based on observer pattern"
     }
-}
-
-namespace collision{
-
-    class CollisionDetection
-    {
-        implementaion of the collision detection
-        + CastIfGrounded(): RaycastHit2D
-    }
-}
-
-namespace charController{
-
-    class CharacterController
-    {
-        + move(displacement, BoxCollider2D): void
-        diffrent states for the collision detection
-        + grounded collision
-        + airbord collision etc.
-    }
-
-    class PlayerController
-    {
-        should have readonly access to states
-        and stuff like isGrouned variables
-    }
-
-    interface BaseCharacterState
-    {
-        void Move(ref Player)
-    }
-
-    CharacterController -* Unity.BoxCollider2D
-    PlayerController -|> CharacterController
-
-}
-
-charController.CharacterController ---> collision.CollisionDetection
-charController.CharacterController --* charController.BaseCharacterState
-
-
-@enduml
-
-@startuml
-
-namespace Unity{
-
 }
 
 namespace actorCollision{
+
     class CollisionInfo {}
     class CollisionDetection 
     {
@@ -65,6 +19,116 @@ namespace actorCollision{
     CollisionDetection *- CollisionInfo
 }
 
+namespace actorController{
 
+/' --------- NOTES ----------- '/
+note right of ActorController::List<IDisplace&>
+    reset on every state Update()
+end note
+/' --------- NOTES ----------- '/
+
+    class ActorController
+    {
+        - collisionDetection : CollisionDetection
+        - currentState
+        - List<IDisplace&>
+        - List<IActorState>
+        - OnGameUpdate(): Unity function
+        + AddVelocity(displacment: Vector2)
+        + ResetVelocity()
+        + ChangeState(IActorState&)
+        + AddState() /'debatable if nessesery'/
+        + GetStates(): Array<readonly IActorState&>
+    }
+
+}
+
+namespace UserClassesDisplacment{
+    interface IDisplace
+    {
+        - ActorController& charController
+        + displacement : Vector2
+        + DisplacementAction()
+    }
+
+    class Locomotion implements IDisplace
+    {
+
+    }
+    class Jump  implements IDisplace
+    {
+
+    }
+
+    Unity.InputSystem *--> IDisplace
+
+
+    IDisplace --> actorController.ActorController
+}
+
+namespace UserClassesStates{
+    interface IActorState
+    {
+        - ActorController&
+        + Initial(ActorController& controller)
+        + Update(List<IDisplace&>)
+        + OnStateChange()
+    }
+
+    class GroundedState implements IActorState
+    {
+
+    }
+
+    class AirBorn implements IActorState
+    {
+
+    }
+
+    actorController.ActorController *-d- IActorState
+}
+
+actorCollision.CollisionDetection *-- actorController.ActorController
+
+actorCollision.CollisionDetection -u-> Unity.BoxCollider2D
+
+
+
+/' --------- NOTES ----------- '/
+
+note top of actorCollision.CollisionDetection
+    HorizontalCheck then VerticalCheck
+end note
+
+note top of UserClassesDisplacment
+    classes that will modify the public "displacement" Vector
+end note
+
+note as IDisplaceIActorStateNote
+    Depending on Input, diffrent class is called
+    which stores it self inside the List<IDisplace&> and stores the displacement value in its field.
+    When Update it takes list of IDisplace and can decide act accordingly to the type of the displacement
+
+end note 
+
+UserClassesDisplacment -- IDisplaceIActorStateNote
+UserClassesStates -- IDisplaceIActorStateNote
+actorController.ActorController -- IDisplaceIActorStateNote
+
+/' --------- NOTES ----------- '/
+
+}
+@enduml
+
+@startuml InputToUpdate
+
+IDisplace --> actorController : Store displacment vector and referenct to itself in List
+actorController --> IActorState : Passes the stored List into the states Update method
+IActorState -> IActorState : Moves the player accordingly
+
+note as exmplenatin
+    So deending on the state that the actor is in
+    User can deploy diffrent behaviour
+end note
 
 @enduml
