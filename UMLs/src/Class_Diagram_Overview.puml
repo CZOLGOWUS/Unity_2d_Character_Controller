@@ -8,7 +8,8 @@ namespace Unity{
     class InputSystem 
     {
     }
-/' --------- NOTES ----------- '/
+
+/' ++++++++++ NOTES ++++++++++ '/
 note top of BoxCollider2D
     used only for
     simple character size configuration
@@ -19,6 +20,7 @@ note top of InputSystem
     based on observer pattern
 end note
 /' --------- NOTES ----------- '/
+
 }
 
 namespace actorCollision{
@@ -38,25 +40,16 @@ namespace actorCollision{
     }
 
     CollisionDetection *- CollisionInfo
-/' --------- NOTES ----------- '/
+
+/' ++++++++++ NOTES ++++++++++ '/
 note left of CollisionDetection::collider
     Initialized by GetComponent<>()
 end note
 /' --------- NOTES ----------- '/
+
 }
 
 namespace actorController{
-
-/' --------- NOTES ----------- '/
-note right of ActorController::List<IDisplace&>
-    reset on every state Update()
-end note
-
-note right of ActorController::OnGameUpdate
-    Calls the state's Update() and Collision detection
-    after that actually moves the actor
-end note
-/' --------- NOTES ----------- '/
 
     class ActorController
     {
@@ -72,6 +65,18 @@ end note
         + GetStates(): Array<readonly IActorState&>
     }
 
+
+/' ++++++++++ NOTES ++++++++++ '/
+note right of ActorController::List<IDisplace&>
+    reset on every state Update()
+end note
+
+note right of ActorController::OnGameUpdate
+    Calls the state's Update() and Collision detection
+    after that actually moves the actor
+end note
+/' --------- NOTES ----------- '/
+
 }
 
 namespace UserClassesDisplacment{
@@ -79,6 +84,8 @@ namespace UserClassesDisplacment{
     {
         - ActorController& charController
         + displacement : Vector2 - Parameter
+        + SetDisplacment()
+        + GetDisplacment(): Vector2
     }
 
     class Locomotion implements IDisplace
@@ -92,6 +99,13 @@ namespace UserClassesDisplacment{
 
     Unity.InputSystem *--> IDisplace
     IDisplace --> actorController.ActorController
+
+/' ++++++++++ NOTES ++++++++++ '/
+note left of IDisplace::SetDisplacment
+    Set the displacment vector 
+    preferabley trhu Unity InputSystem
+end note
+/' --------- NOTES ----------- '/
 }
 
 namespace UserClassesStates{
@@ -122,7 +136,7 @@ actorCollision.CollisionDetection -u-> Unity.BoxCollider2D
 
 
 
-/' --------- NOTES ----------- '/
+/' ++++++++++ NOTES ++++++++++ '/
 
 note top of actorCollision.CollisionDetection
     HorizontalCheck then VerticalCheck
