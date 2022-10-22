@@ -1,22 +1,48 @@
 @startuml class_overview
 component ActorObject{
 namespace Unity{
-    class BoxCollider2D{}
+    class BoxCollider2D
+    {
+
+    }
     class InputSystem 
     {
-        "based on observer pattern"
     }
+/' --------- NOTES ----------- '/
+note top of BoxCollider2D
+    used only for
+    simple character size configuration
+    can be changed
+end note
+
+note top of InputSystem
+    based on observer pattern
+end note
+/' --------- NOTES ----------- '/
 }
 
 namespace actorCollision{
 
-    class CollisionInfo {}
+    class CollisionInfo 
+    {
+        + skinWidth: property
+    }
+
     class CollisionDetection 
     {
+        - collider: BoxCollider2D 
         + collisionInfo: CollisionInfo - readonly
+        + ApplyCollisions(velocity&: Vector2)
+        - ApplyHorizontalCollisions(velocity&: Vector2)
+        - ApplyVerticalCollisions(velocity&: Vector2)
     }
 
     CollisionDetection *- CollisionInfo
+/' --------- NOTES ----------- '/
+note left of CollisionDetection::collider
+    Initialized by GetComponent<>()
+end note
+/' --------- NOTES ----------- '/
 }
 
 namespace actorController{
@@ -39,10 +65,10 @@ end note
         - List<IDisplace&>
         - List<IActorState>
         - OnGameUpdate(): Unity function
-        + AddVelocity(displacment: Vector2)
+        + AddDisplacement(IDisplace&)
         + ResetVelocity()
         + ChangeState(IActorState&)
-        + AddState() /'debatable if nessesery'/
+        + AddState(IActorState) /'debatable if nessesery'/
         + GetStates(): Array<readonly IActorState&>
     }
 
@@ -52,22 +78,19 @@ namespace UserClassesDisplacment{
     interface IDisplace
     {
         - ActorController& charController
-        + displacement : Vector2
-        + DisplacementAction()
+        + displacement : Vector2 - Parameter
     }
 
     class Locomotion implements IDisplace
     {
-
+        + Move()
     }
     class Jump  implements IDisplace
     {
-
+        + Jump()
     }
 
     Unity.InputSystem *--> IDisplace
-
-
     IDisplace --> actorController.ActorController
 }
 
@@ -129,7 +152,7 @@ actorController.ActorController -- IDisplaceIActorStateNote
 
 IDisplace --> actorController : Store displacment vector and referenct to itself in List
 actorController --> IActorState : Passes the stored List into the states Update method
-IActorState -> IActorState : Moves the player accordingly
+IActorState -> IActorState : modifies the displecment vector accordingly
 
 note as exmplenatin
     So deending on the state that the actor is in
