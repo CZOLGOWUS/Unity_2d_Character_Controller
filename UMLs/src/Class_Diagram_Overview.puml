@@ -73,19 +73,19 @@ end note
 
 note right of ActorController::OnGameUpdate
     Calls the state's Update() and Collision detection
-    after that actually moves the actor
+    and after that, moves the actor
 end note
 /' --------- NOTES ----------- '/
 
 }
 
-namespace UserClassesDisplacment{
+namespace UserClassesDisplacement{
     interface IDisplace
     {
         - ActorController& charController
         + displacement : Vector2 - Parameter
-        + SetDisplacment()
-        + GetDisplacment(): Vector2
+        + SetDisplacement()
+        + GetDisplacement(): Vector2
     }
 
     class Locomotion implements IDisplace
@@ -101,8 +101,8 @@ namespace UserClassesDisplacment{
     IDisplace --> actorController.ActorController
 
 /' ++++++++++ NOTES ++++++++++ '/
-note left of IDisplace::SetDisplacment
-    Set the displacment vector 
+note left of IDisplace::SetDisplacement
+    Set the displacement vector 
     preferabley trhu Unity InputSystem
 end note
 /' --------- NOTES ----------- '/
@@ -142,18 +142,16 @@ note top of actorCollision.CollisionDetection
     HorizontalCheck then VerticalCheck
 end note
 
-note top of UserClassesDisplacment
+note top of UserClassesDisplacement
     classes that will modify the public "displacement" Vector
 end note
 
 note as IDisplaceIActorStateNote
-    Depending on Input, diffrent class is called
-    which stores it self inside the List<IDisplace&> and stores the displacement value in its field.
-    When Update it takes list of IDisplace and can decide act accordingly to the type of the displacement
-
+    Player input decides what IDisplace classes are modified and stored in ActorController
+    and then used by the currentState
 end note 
 
-UserClassesDisplacment -- IDisplaceIActorStateNote
+UserClassesDisplacement -- IDisplaceIActorStateNote
 UserClassesStates -- IDisplaceIActorStateNote
 actorController.ActorController -- IDisplaceIActorStateNote
 
@@ -164,7 +162,7 @@ actorController.ActorController -- IDisplaceIActorStateNote
 
 @startuml InputToUpdate
 
-IDisplace --> actorController : Store displacment vector and referenct to itself in List
+IDisplace --> actorController : Store displacement vector and referenct to itself in List
 actorController --> IActorState : Passes the stored List into the states Update method
 IActorState -> IActorState : modifies the displecment vector accordingly
 

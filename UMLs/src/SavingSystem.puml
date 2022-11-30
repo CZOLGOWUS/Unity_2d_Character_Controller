@@ -1,0 +1,52 @@
+@startuml saveSystemClassOverview
+
+
+class Vector3
+{
+    x,y,z: float
+}
+
+class Item
+{
+    name: String
+    value: Integer
+}
+
+class Inventory
+{
+    items List<Item>
+}
+
+Inventory *--Item
+
+class Player
+{
+    position: Vector3
+    equipment: Inventory
+    selectedItem: Item? // we dont save this
+}
+
+Player *-- Vector3
+Player *-- Inventory
+
+
+class PlayerSaveData
+{
+
+}
+
+PlayerSaveData --> Player
+
+class SaveController
+{
+    {static} save<type>(path: String)
+    {static} load<type>(path: String)
+}
+
+class SaveFormater
+{
+    fromJson()
+    toJson()
+}
+
+@enduml
