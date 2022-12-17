@@ -160,15 +160,35 @@ actorController.ActorController -- IDisplaceIActorStateNote
 }
 @enduml
 
-@startuml InputToUpdate
+@startuml Movement
 
-IDisplace --> actorController : Store displacement vector and referenct to itself in List
-actorController --> IActorState : Passes the stored List into the states Update method
-IActorState -> IActorState : modifies the displecment vector accordingly
+:gather input;
 
-note as exmplenatin
-    So deending on the state that the actor is in
-    User can deploy diffrent behaviour
-end note
+@enduml
+
+@startuml collisionOverview
+
+start
+:Update Boxcast Origins;
+:Apply Horizontal Collsion;
+:Apply Vertical Collision;
+stop
+
+@enduml
+
+
+@startuml ApplyHorizontalCollision
+
+start
+
+stop
+
+@enduml
+
+@startuml ApplyVerticalCollision
+
+start
+
+stop
 
 @enduml

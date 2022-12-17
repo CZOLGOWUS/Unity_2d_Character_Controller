@@ -29,7 +29,7 @@ namespace actorController.displace
 
         public void AddDisplacement()
         {
-            controller.Displaces.Add(this);
+            controller.Displacements.Add(this);
         }
 
         public void ResetDisplacement()
@@ -45,14 +45,6 @@ namespace actorController.displace
                 AddDisplacement();
                 return;
             }
-
-            if (ctx.canceled)
-            {
-                Displacement = Vector2.zero;
-                AddDisplacement();
-                return;
-            }
-
         }
     }
 

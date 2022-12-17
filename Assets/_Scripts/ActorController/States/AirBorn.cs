@@ -23,7 +23,12 @@ namespace actorController.state
             Debug.Log("OnStateChange of: " + this.name);
         }
 
-        public void StateUpdate(List<IDisplace> displaces)
+        public void StateUpdate()
+        {
+
+        }
+
+        public Vector2 CalculateVelocity(List<IDisplace> displaces)
         {
             Debug.Log("Update of: " + this.name);
 
@@ -31,6 +36,8 @@ namespace actorController.state
             {
                 Debug.Log(" displaces: " + i.ToString());
             }
+
+            return Vector2.zero;
 
         }
     }

@@ -5,36 +5,53 @@ using System;
 
 using actorController.displace;
 using actorController.state;
+using actorController.collsion;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace actorController.controller
 {
     public class ActorController : MonoBehaviour
     {
-        List<IDisplace> displaces = new List<IDisplace>();
+        List<IDisplace> displacements = new List<IDisplace>();
         Dictionary<Type, IActorState> states = new Dictionary<Type, IActorState>();
-
-        public Dictionary<Type, IActorState> States { get => states; private set => states = value; }
-        public List<IDisplace> Displaces { get => displaces; private set => displaces = value; }
+        Dictionary<Type, IDisplace> allDisplacements = new Dictionary<Type, IDisplace>();
 
         IActorState currentState;
+        CollisionDetection collisionDetection;
+
+        Vector2 currentVelocity = Vector2.zero;
+
+        #region Parameters
+
+        public Dictionary<Type, IActorState> States { get => states; private set => states = value; }
+        public Dictionary<Type, IDisplace> AllDisplacements { get => allDisplacements; private set => allDisplacements = value; }
+        public List<IDisplace> Displacements { get => displacements; private set => displacements = value; }
+
+        public Vector2 CurrentVelocity { get => currentVelocity; set => currentVelocity = value; }
+        public CollisionDetection CollisionDetection { get => collisionDetection; private set => collisionDetection = value; }
+
+        #endregion
 
         private void OnEnable()
         {
-            GetComponents<IActorState>().ToList().ForEach((state) => states.Add(state.GetType(), state));
+            States = GetComponents<IActorState>().ToDictionary((state) => state.GetType(), (d) => d);
+            AllDisplacements = GetComponents<IDisplace>().ToDictionary((d) => d.GetType(), (d) => d);
+
+            collisionDetection = GetComponent<CollisionDetection>();
 
             ChangeState(states[typeof(Grouned)]);
         }
 
-        void Start()
-        {
-
-        }
-
         void Update()
         {
-            currentState.StateUpdate(displaces);
+            currentState.StateUpdate();
 
-            displaces.Clear();
+            Vector2 nextVelocity = currentState.CalculateVelocity(displacements);
+
+            transform.Translate(nextVelocity);
+
+            currentVelocity = nextVelocity;
+            displacements.Clear();
         }
 
         public void ChangeState(IActorState newState)
