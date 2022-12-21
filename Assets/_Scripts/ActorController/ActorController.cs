@@ -22,14 +22,12 @@ namespace actorController.controller
         Vector2 currentVelocity = Vector2.zero;
 
         #region Parameters
-
         public Dictionary<Type, IActorState> States { get => states; private set => states = value; }
         public Dictionary<Type, IDisplace> AllDisplacements { get => allDisplacements; private set => allDisplacements = value; }
         public List<IDisplace> Displacements { get => displacements; private set => displacements = value; }
 
         public Vector2 CurrentVelocity { get => currentVelocity; set => currentVelocity = value; }
         public CollisionDetection CollisionDetection { get => collisionDetection; private set => collisionDetection = value; }
-
         #endregion
 
         private void OnEnable()
@@ -39,17 +37,17 @@ namespace actorController.controller
 
             collisionDetection = GetComponent<CollisionDetection>();
 
-            ChangeState(states[typeof(Grouned)]);
+            ChangeState(states[typeof(AirBorn)]);
         }
 
-        void Update()
+        void FixedUpdate()
         {
             currentState.StateUpdate();
 
             Vector2 nextVelocity = currentState.CalculateVelocity(displacements);
+            collisionDetection.ApplyCollision(ref nextVelocity);
 
             transform.Translate(nextVelocity);
-
             currentVelocity = nextVelocity;
             displacements.Clear();
         }

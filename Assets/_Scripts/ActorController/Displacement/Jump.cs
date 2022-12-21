@@ -11,7 +11,7 @@ namespace actorController.displace
 
         [SerializeField] private float jumpForce = 50f;
 
-        ActorController controller = null;
+        ActorController actorController = null;
         Vector2 displacement;
 
         public Vector2 Displacement { get => displacement; private set { displacement = value; } }
@@ -19,7 +19,7 @@ namespace actorController.displace
 
         private void OnEnable()
         {
-            controller = GetComponent<ActorController>();
+            actorController = GetComponent<ActorController>();
         }
 
         public Vector2 GetCurrentDisplacement()
@@ -29,7 +29,7 @@ namespace actorController.displace
 
         public void AddDisplacement()
         {
-            controller.Displacements.Add(this);
+            actorController.Displacements.Add(this);
         }
 
         public void ResetDisplacement()

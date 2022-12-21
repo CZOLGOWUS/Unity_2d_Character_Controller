@@ -3,19 +3,20 @@ using UnityEngine;
 
 using actorController.displace;
 using actorController.controller;
+using Unity.VisualScripting;
 
 namespace actorController.state
 {
     [RequireComponent(typeof(ActorController))]
     public class Grouned : MonoBehaviour, IActorState
     {
-        ActorController controller = null;
+        ActorController actorController = null;
         IDisplace locomotion = null;
 
         [SerializeField] float minTravelDistance = 0.01f;
         [Range(0f, 1f)][SerializeField] float accelerationTime;
 
-        [SerializeField] float gravity = 9.8f;
+        [SerializeField] float gravity = 9f;
         [SerializeField] float maxSpeed = 20f;
         [SerializeField] float friction = 0.2f;
 
@@ -26,7 +27,7 @@ namespace actorController.state
         public void StateInitial(ActorController controller)
         {
             Debug.Log("Initial of: " + this.ToString());
-            this.controller = controller;
+            this.actorController = controller;
             locomotion = controller.AllDisplacements[typeof(Locomotion)];
         }
 
@@ -37,22 +38,36 @@ namespace actorController.state
 
         public void StateUpdate()
         {
+            StateChangeCheck();
             locomotion.AddDisplacement();
         }
 
         public Vector2 CalculateVelocity(List<IDisplace> displaces)
         {
-            Vector2 velocity = controller.CurrentVelocity;
+            Vector2 velocity = actorController.CurrentVelocity;
             Vector2 targetVelocity = Vector2.zero;
 
             targetVelocity = SumOfAllDisplacments(displaces, targetVelocity);
-            velocity.x = ApplyMovementSmoothing(velocity, targetVelocity) * Time.fixedDeltaTime;
+            velocity.x = ApplyMovementSmoothing(velocity, targetVelocity) * Time.deltaTime;
 
-            // velocity.y -= gravity * Time.fixedDeltaTime;
+            velocity.y += targetVelocity.y;
+
+            velocity.y -= gravity * Time.deltaTime * 0.1f;
 
             velocity = ClampVelocity(velocity);
 
             return velocity;
+        }
+
+        private void StateChangeCheck()
+        {
+            if (IsAirBorn())
+                actorController.ChangeState(actorController.States[typeof(AirBorn)]);
+        }
+
+        private bool IsAirBorn()
+        {
+            return actorController.CollisionDetection.CollisionInfo.vertical[0].collider == null;
         }
 
         private Vector2 ClampVelocity(Vector2 velocity)
@@ -72,13 +87,12 @@ namespace actorController.state
             return Mathf.SmoothDamp(velocity.x, targetVelocity.x, ref currentVelocitySmoother, accelerationTime);
         }
 
-        private static Vector2 SumOfAllDisplacments(List<IDisplace> displaces, Vector2 targetVelocity)
+        private Vector2 SumOfAllDisplacments(List<IDisplace> displaces, Vector2 targetVelocity)
         {
             foreach (var i in displaces)
             {
                 targetVelocity += i.GetCurrentDisplacement();
             }
-
             return targetVelocity;
         }
     }
