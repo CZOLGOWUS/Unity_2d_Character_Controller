@@ -76,7 +76,7 @@ namespace actorController.collsion
             float castDistance = coll.bounds.size.x + Mathf.Abs(velocity.x) + skinWidth;
 
             Physics2D.BoxCastNonAlloc(
-                boxCastOrigin.center + (collisionInfo.direction.horizontal * Vector2.left) * coll.bounds.extents.x * 0.9f,
+                boxCastOrigin.center + (collisionInfo.direction.horizontal * Vector2.left) * coll.bounds.extents.x,
                 boxcastSize,
                 0f,
                 Vector2.right * collisionInfo.direction.horizontal,

@@ -22,14 +22,14 @@ namespace actorController.state
 
         public void StateInitial(ActorController controller)
         {
-            // Debug.Log("Initial of: " + this.name);
+            Debug.Log("Initial of: " + this.name);
             this.actorController = controller;
             locomotion = controller.AllDisplacements[typeof(Locomotion)];
         }
 
         public void OnStateChange()
         {
-            // Debug.Log("OnStateChange of: " + this.name);
+            Debug.Log("OnStateChange of: " + this.name);
         }
 
         public void StateUpdate()
