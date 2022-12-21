@@ -892,7 +892,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: c9c6a5386a7a9a342a0bd1c06b766a14, type: 2}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: efb048dd336529741998eb31a2eb45d8, type: 2}
+    m_Data: {fileID: 11400000, guid: 3fc898ba59cbd584cb6070010dc68d3b, type: 2}
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 686045c08e6d28740b5fad9100e0b1aa, type: 2}
   - m_RefCount: 1
@@ -951,7 +951,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 617079182, guid: 93cc07aff712d074ca38ea318f818bc4, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 1111623814, guid: 93cc07aff712d074ca38ea318f818bc4, type: 3}
+    m_Data: {fileID: 656267765, guid: 93cc07aff712d074ca38ea318f818bc4, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: -685598574, guid: 93cc07aff712d074ca38ea318f818bc4, type: 3}
   - m_RefCount: 1
@@ -1183,7 +1183,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745215169}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.15, y: -0.93, z: 0}
+  m_LocalPosition: {x: 0.45, y: -1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1277,7 +1277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff556cd8705c8d459ecb52ea8101b7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 0.3
+  jumpForce: 0.35
 --- !u!114 &1745215176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1291,10 +1291,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minTravelDistance: 0.01
-  accelerationTime: 0.204
+  accelerationTime: 0.056
   gravity: 9
   maxSpeed: 500
   friction: 0.2
+  moveX: 0
 --- !u!114 &1745215177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1307,9 +1308,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 823c510c0ef39ab43ac7291362e40799, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 20
+  maxSpeed: 500
   gravity: 9
-  accelerationTime: 0.579
+  accelerationTime: 0.056
 --- !u!114 &1745215178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1325,7 +1326,7 @@ MonoBehaviour:
   terrain:
     serializedVersion: 2
     m_Bits: 1024
-  skinWidth: 0.015
+  skinWidth: 0.03
 --- !u!61 &1745215179
 BoxCollider2D:
   m_ObjectHideFlags: 0

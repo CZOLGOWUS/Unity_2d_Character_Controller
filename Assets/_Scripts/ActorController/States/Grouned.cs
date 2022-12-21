@@ -20,6 +20,8 @@ namespace actorController.state
         [SerializeField] float maxSpeed = 20f;
         [SerializeField] float friction = 0.2f;
 
+        [Range(-50f, 50f)][SerializeField] float moveX = 0f;
+
 
         float currentVelocitySmoother = 0f;
 
@@ -48,9 +50,9 @@ namespace actorController.state
             Vector2 targetVelocity = Vector2.zero;
 
             targetVelocity = SumOfAllDisplacments(displaces, targetVelocity);
-            velocity.x = ApplyMovementSmoothing(velocity, targetVelocity) * Time.deltaTime;
 
-            velocity.y += targetVelocity.y;
+            velocity.x = targetVelocity.x + moveX * Time.deltaTime;
+            velocity.y = targetVelocity.y;
 
             velocity.y -= gravity * Time.deltaTime * 0.1f;
 
@@ -82,18 +84,24 @@ namespace actorController.state
             return velocity.magnitude > maxSpeed;
         }
 
-        private float ApplyMovementSmoothing(Vector2 velocity, Vector2 targetVelocity)
-        {
-            return Mathf.SmoothDamp(velocity.x, targetVelocity.x, ref currentVelocitySmoother, accelerationTime);
-        }
-
         private Vector2 SumOfAllDisplacments(List<IDisplace> displaces, Vector2 targetVelocity)
         {
             foreach (var i in displaces)
             {
+                if (i.GetType() == typeof(Locomotion))
+                {
+                    targetVelocity.x += ApplyMovementSmoothing(actorController.CurrentVelocity, i.GetCurrentDisplacement()) * Time.deltaTime;
+                    continue;
+                }
+
                 targetVelocity += i.GetCurrentDisplacement();
             }
             return targetVelocity;
+        }
+
+        private float ApplyMovementSmoothing(Vector2 velocity, Vector2 targetVelocity)
+        {
+            return Mathf.SmoothDamp(velocity.x, targetVelocity.x, ref currentVelocitySmoother, accelerationTime, maxSpeed);
         }
     }
 }

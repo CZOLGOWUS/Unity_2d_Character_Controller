@@ -72,7 +72,7 @@ namespace actorController.collsion
         {
             Vector2 boxcastSize = new Vector2(
                 skinWidth,
-                coll.bounds.size.y - 2 * skinWidth);
+                coll.bounds.size.y - 2f * skinWidth);
             float castDistance = coll.bounds.size.x + Mathf.Abs(velocity.x) + skinWidth;
 
             Physics2D.BoxCastNonAlloc(
@@ -116,7 +116,7 @@ namespace actorController.collsion
             float castDistance = (coll.bounds.size.y) + Mathf.Abs(velocity.y) + skinWidth;
 
             Physics2D.BoxCastNonAlloc(
-                boxCastOrigin.center + (collisionInfo.direction.vertical * Vector2.down) * (Vector2)coll.bounds.extents,
+                boxCastOrigin.center + (collisionInfo.direction.vertical * Vector2.down) * coll.bounds.extents,
                 boxcastSize,
                 0f,
                 Vector2.up * collisionInfo.direction.vertical,

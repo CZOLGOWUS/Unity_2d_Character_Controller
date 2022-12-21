@@ -51,8 +51,7 @@ namespace actorController.state
             Vector2 velocity = actorController.CurrentVelocity;
             Vector2 targetVelocity = SumOfAllDisplacments(displaces);
 
-            velocity.x = ApplyMovementSmoothing(velocity, targetVelocity) * Time.deltaTime;
-
+            velocity.x = targetVelocity.x;
             velocity.y -= gravity * Time.deltaTime * 0.1f;
 
             velocity = ClampVelocity(velocity);
@@ -74,11 +73,6 @@ namespace actorController.state
             return velocity.magnitude > maxSpeed;
         }
 
-        private float ApplyMovementSmoothing(Vector2 velocity, Vector2 targetVelocity)
-        {
-            return Mathf.SmoothDamp(velocity.x, targetVelocity.x, ref currentVelocitySmoother, accelerationTime);
-        }
-
         private Vector2 SumOfAllDisplacments(List<IDisplace> displaces)
         {
             Vector2 targetVelocity = new Vector2();
@@ -87,10 +81,21 @@ namespace actorController.state
                 if (i.GetType() == typeof(Jump))
                     continue;
 
+                if (i.GetType() == typeof(Locomotion))
+                {
+                    targetVelocity.x += ApplyMovementSmoothing(actorController.CurrentVelocity, i.GetCurrentDisplacement()) * Time.deltaTime;
+                    continue;
+                }
+
                 targetVelocity += i.GetCurrentDisplacement();
             }
 
             return targetVelocity;
+        }
+
+        private float ApplyMovementSmoothing(Vector2 velocity, Vector2 targetVelocity)
+        {
+            return Mathf.SmoothDamp(velocity.x, targetVelocity.x, ref currentVelocitySmoother, accelerationTime, maxSpeed);
         }
 
     }
