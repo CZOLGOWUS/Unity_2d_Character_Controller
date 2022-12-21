@@ -21,10 +21,8 @@ namespace actorController.collsion
     {
         public Vector2 center;
         public float
-            centerLeftDistance,
-            centerRightDistance,
-            centerTopDistance,
-            centerBottomDistance;
+            sizeY,
+            sizeX;
     }
 
     public struct CollisionInfo

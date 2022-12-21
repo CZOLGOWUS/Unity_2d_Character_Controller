@@ -32,13 +32,9 @@ namespace actorController.collsion
 
         public void UpdateCastOrigin()
         {
-            Bounds collBounds = coll.bounds;
-
-            boxCastOrigin.center = collBounds.center;
-            boxCastOrigin.centerLeftDistance = collBounds.center.x - collBounds.min.x;
-            boxCastOrigin.centerRightDistance = collBounds.max.x - collBounds.center.x;
-            boxCastOrigin.centerTopDistance = collBounds.max.y - collBounds.center.y;
-            boxCastOrigin.centerBottomDistance = collBounds.center.y - collBounds.min.y;
+            boxCastOrigin.center = coll.bounds.center;
+            boxCastOrigin.sizeY = coll.size.y;
+            boxCastOrigin.sizeX = coll.size.x;
         }
 
         public void ApplyCollision(ref Vector2 velocity)
@@ -72,11 +68,11 @@ namespace actorController.collsion
         {
             Vector2 boxcastSize = new Vector2(
                 skinWidth,
-                coll.bounds.size.y - 2f * skinWidth);
-            float castDistance = coll.bounds.size.x + Mathf.Abs(velocity.x) + skinWidth;
+                boxCastOrigin.sizeY - 2f * skinWidth);
+            float castDistance = boxCastOrigin.sizeX + Mathf.Abs(velocity.x) + 2f * skinWidth;
 
             Physics2D.BoxCastNonAlloc(
-                boxCastOrigin.center + (collisionInfo.direction.horizontal * Vector2.left) * coll.bounds.extents.x,
+                boxCastOrigin.center - ((boxCastOrigin.sizeX / 2f - skinWidth) * Vector2.right) * collisionInfo.direction.horizontal,
                 boxcastSize,
                 0f,
                 Vector2.right * collisionInfo.direction.horizontal,
@@ -94,7 +90,7 @@ namespace actorController.collsion
         {
             RaycastHit2D closestHit = CalculateClosestHit(collisionInfo.horizontal);
 
-            velocity.x = transform.InverseTransformPoint(closestHit.point).x - (coll.bounds.extents.x + skinWidth) * collisionInfo.direction.horizontal;
+            velocity.x = transform.InverseTransformPoint(closestHit.point).x - (boxCastOrigin.sizeX / 2f + skinWidth) * collisionInfo.direction.horizontal;
             return velocity;
         }
 
@@ -111,12 +107,12 @@ namespace actorController.collsion
         private void GatherVerticalCollisionInfo(Vector2 velocity)
         {
             Vector2 boxcastSize = new Vector2(
-                coll.bounds.size.x - 2f * skinWidth,
+                boxCastOrigin.sizeX - 2f * skinWidth,
                 skinWidth);
-            float castDistance = (coll.bounds.size.y) + Mathf.Abs(velocity.y) + skinWidth;
+            float castDistance = (boxCastOrigin.sizeY) + Mathf.Abs(velocity.y) + skinWidth;
 
             Physics2D.BoxCastNonAlloc(
-                boxCastOrigin.center + (collisionInfo.direction.vertical * Vector2.down) * coll.bounds.extents,
+                boxCastOrigin.center + (collisionInfo.direction.vertical * Vector2.down) * Vector2.up * boxCastOrigin.sizeY / 2f,
                 boxcastSize,
                 0f,
                 Vector2.up * collisionInfo.direction.vertical,
@@ -129,8 +125,7 @@ namespace actorController.collsion
         private Vector2 SnapToVerticalCollisionHitPoint(Vector2 velocity)
         {
             RaycastHit2D closestHit = CalculateClosestHit(collisionInfo.vertical);
-
-            velocity.y = transform.InverseTransformPoint(closestHit.point).y + (coll.bounds.extents.y + skinWidth) * (-collisionInfo.direction.vertical);
+            velocity.y = transform.InverseTransformPoint(closestHit.point).y + (boxCastOrigin.sizeY / 2f + skinWidth) * (-collisionInfo.direction.vertical);
             return velocity;
         }
 

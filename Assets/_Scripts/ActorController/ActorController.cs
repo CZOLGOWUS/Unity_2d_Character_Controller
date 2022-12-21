@@ -40,7 +40,7 @@ namespace actorController.controller
             ChangeState(states[typeof(AirBorn)]);
         }
 
-        void FixedUpdate()
+        void Update()
         {
             currentState.StateUpdate();
 
