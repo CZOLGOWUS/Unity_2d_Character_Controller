@@ -61,6 +61,8 @@ public class EnemyBehaviour : MonoBehaviour
             moveSpeed = 0f;
             GetComponent<Animator>().enabled = false;
             GetComponent<SpriteRenderer>().color = Color.red;
+            GetComponents<BoxCollider2D>()[0].enabled = false;
+            GetComponents<BoxCollider2D>()[1].enabled = false;
         }
     }
 }

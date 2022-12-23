@@ -11,6 +11,7 @@ namespace actorController.displace
     {
         ActorController actorController;
         BoxCollider2D boxColl;
+        Collider2D prevCollider;
 
         [SerializeField] float jumpForce;
 
@@ -43,23 +44,16 @@ namespace actorController.displace
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            if (prevCollider != null && prevCollider.transform.gameObject == collision.transform.gameObject)
+                return;
+
             if (collision.transform.tag == "Enemy")
             {
                 if (actorController.CurrentState.GetType() == typeof(AirBorn))
                 {
-                    RaycastHit2D hit = Physics2D.BoxCast(
-                        collision.bounds.center,
-                        collision.bounds.size + Vector3.right,
-                        0f,
-                        Vector2.up,
-                        2f);
-
-
-                    if (hit.transform.tag == "Player")
-                    {
-                        displacement = Vector2.up * jumpForce;
-                        AddDisplacement();
-                    }
+                    displacement = Vector2.up * (jumpForce + Mathf.Abs(actorController.CurrentVelocity.y));
+                    AddDisplacement();
+                    prevCollider = collision;
                     return;
                 }
 

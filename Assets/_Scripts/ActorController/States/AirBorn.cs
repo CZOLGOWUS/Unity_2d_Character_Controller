@@ -61,9 +61,9 @@ namespace actorController.state
             Vector2 targetVelocity = SumOfAllDisplacments(displaces);
 
             velocity.x = targetVelocity.x;
-            velocity.y -= gravity * Time.deltaTime * 0.1f;
-
             velocity.y += targetVelocity.y;
+
+            velocity.y -= gravity * Time.deltaTime * 0.1f;
 
             velocity = ClampVelocity(velocity);
 
