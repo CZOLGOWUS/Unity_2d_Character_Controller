@@ -12,30 +12,36 @@ namespace actorController.state
     {
         ActorController actorController = null;
         IDisplace locomotion = null;
+        PlayerAnimator playerAnimator;
 
-        [SerializeField] float minTravelDistance = 0.01f;
         [Range(0f, 1f)][SerializeField] float accelerationTime;
 
         [SerializeField] float gravity = 9f;
         [SerializeField] float maxSpeed = 20f;
-        [SerializeField] float friction = 0.2f;
 
         [Range(-50f, 50f)][SerializeField] float moveX = 0f;
 
 
         float currentVelocitySmoother = 0f;
 
+        private void OnEnable()
+        {
+            playerAnimator = GetComponent<PlayerAnimator>();
+        }
 
         public void StateInitial(ActorController controller)
         {
-            Debug.Log("Initial of: " + this.ToString());
+            playerAnimator.EndJumpingAnimation();
+            playerAnimator.SetFallingAnimation(false);
+
+            // Debug.Log("Initial of: " + this.ToString());
             this.actorController = controller;
             locomotion = controller.AllDisplacements[typeof(Locomotion)];
         }
 
         public void OnStateChange()
         {
-            Debug.Log("OnStateChange of: " + this.ToString());
+            // Debug.Log("OnStateChange of: " + this.ToString());
         }
 
         public void StateUpdate()
@@ -58,13 +64,17 @@ namespace actorController.state
 
             velocity = ClampVelocity(velocity);
 
+            playerAnimator.SetRunningVelocity(velocity.x);
             return velocity;
         }
 
         private void StateChangeCheck()
         {
             if (IsAirBorn())
+            {
+                playerAnimator.StartJumpingAnimation();
                 actorController.ChangeState(actorController.States[typeof(AirBorn)]);
+            }
         }
 
         private bool IsAirBorn()
@@ -90,7 +100,7 @@ namespace actorController.state
             {
                 if (i.GetType() == typeof(Locomotion))
                 {
-                    targetVelocity.x += ApplyMovementSmoothing(actorController.CurrentVelocity, i.GetCurrentDisplacement()) * Time.deltaTime;
+                    targetVelocity.x = ApplyMovementSmoothing(actorController.CurrentVelocity, i.GetCurrentDisplacement()) * Time.deltaTime;
                     continue;
                 }
 

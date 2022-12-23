@@ -22,6 +22,7 @@ namespace actorController.controller
         Vector2 currentVelocity = Vector2.zero;
 
         #region Parameters
+        public IActorState CurrentState { get => currentState; }
         public Dictionary<Type, IActorState> States { get => states; private set => states = value; }
         public Dictionary<Type, IDisplace> AllDisplacements { get => allDisplacements; private set => allDisplacements = value; }
         public List<IDisplace> Displacements { get => displacements; private set => displacements = value; }
@@ -36,7 +37,10 @@ namespace actorController.controller
             AllDisplacements = GetComponents<IDisplace>().ToDictionary((d) => d.GetType(), (d) => d);
 
             collisionDetection = GetComponent<CollisionDetection>();
+        }
 
+        private void Start()
+        {
             ChangeState(states[typeof(AirBorn)]);
         }
 

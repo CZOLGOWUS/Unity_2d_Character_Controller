@@ -24,11 +24,16 @@ namespace actorController.collsion
         private void OnEnable()
         {
             coll = GetComponent<BoxCollider2D>();
+            boxCastOrigin = new BoxCastOrigin();
+            collisionInfo = new CollisionInfo();
+        }
 
+        private void Start()
+        {
             collisionInfo.skinWidth = this.skinWidth;
-
             collisionInfo.Reset();
         }
+
 
         public void UpdateCastOrigin()
         {

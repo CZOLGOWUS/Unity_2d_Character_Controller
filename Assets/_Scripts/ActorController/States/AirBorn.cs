@@ -11,8 +11,9 @@ namespace actorController.state
     [RequireComponent(typeof(ActorController))]
     public class AirBorn : MonoBehaviour, IActorState
     {
-        ActorController actorController = null;
-        private IDisplace locomotion;
+        ActorController actorController;
+        IDisplace locomotion;
+        PlayerAnimator animator;
 
         [SerializeField] float maxSpeed = 20f;
         [SerializeField] float gravity = 9f;
@@ -20,22 +21,30 @@ namespace actorController.state
 
         float currentVelocitySmoother = 0f;
 
+        private void OnEnable()
+        {
+            animator = GetComponent<PlayerAnimator>();
+        }
+
         public void StateInitial(ActorController controller)
         {
-            Debug.Log("Initial of: " + this.name);
+            animator.SetFallingAnimation(true);
+            // Debug.Log("Initial of: " + this.name);
             this.actorController = controller;
             locomotion = controller.AllDisplacements[typeof(Locomotion)];
         }
 
         public void OnStateChange()
         {
-            Debug.Log("OnStateChange of: " + this.name);
+            // Debug.Log("OnStateChange of: " + this.name);
         }
 
         public void StateUpdate()
         {
             if (IsGrounded())
+            {
                 actorController.ChangeState(actorController.States[typeof(Grouned)]);
+            }
             locomotion.AddDisplacement();
         }
 
@@ -53,6 +62,8 @@ namespace actorController.state
 
             velocity.x = targetVelocity.x;
             velocity.y -= gravity * Time.deltaTime * 0.1f;
+
+            velocity.y += targetVelocity.y;
 
             velocity = ClampVelocity(velocity);
 

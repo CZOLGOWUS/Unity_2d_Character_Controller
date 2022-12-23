@@ -15,7 +15,7 @@ public class CameraSmoother : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    void LateUpdate()
+    void Update()
     {
         Vector3 targetPosition = target.TransformPoint(offset);
 
