@@ -1,0 +1,106 @@
+@startuml class_overview
+component ActorObject{
+namespace Unity{
+    class BoxCollider2D
+    {
+
+    }
+    class InputSystem 
+    {
+    }
+
+}
+
+namespace actorCollision{
+
+    class CollisionInfo 
+    {
+        + horizontal: RaycastHit2D
+        + vertical: RaycastHit2D
+        + int: direction
+        + skinWidth: property
+    }
+
+    class CollisionDetection 
+    {
+        - collider: BoxCollider2D 
+        + collisionInfo: CollisionInfo - readonly
+        + ApplyCollisions(velocity&: Vector2)
+        - ApplyHorizontalCollisions(velocity&: Vector2)
+        - ApplyVerticalCollisions(velocity&: Vector2)
+    }
+
+    CollisionDetection *- CollisionInfo
+}
+
+namespace actorController{
+
+    class ActorController
+    {
+        - collisionDetection : CollisionDetection
+        - Update(): Unity MonoBehaviour Method
+        - currentState: Parameter<IActorState>
+        + displacements: List<IDisplace&>
+        + AllDisplacements: Dictionary<Type, IDisplace>
+        + States: Dictionary<Type, IActorState>
+        + ChangeState(IActorState&)
+    }
+
+}
+
+namespace userClassesDisplacement{
+    interface IDisplace
+    {
+        - ActorController& charController
+        - currentDisplacement : Vector2 - Parameter
+        + AddDisplacement(): void
+        + GetDisplacement(): Vector2
+        + ResetDisplacement(): void
+    }
+
+    class Locomotion implements IDisplace
+    {
+        + OnMoveInput(CallbackContext)
+    }
+    class Jump  implements IDisplace
+    {
+        + OnJumpInput(CallbackContext)
+    }
+
+    Unity.InputSystem *--> IDisplace
+    IDisplace --> actorController.ActorController
+}
+
+namespace userClassesStates{
+    interface IActorState
+    {
+        - ActorController&
+        + StateInitial(ActorController& controller)
+        + StateUpdate()
+        + CalculateVelocity(List<IDisplace> displaces): Vector2
+        + OnStateChange()
+    }
+
+    class Grounded implements IActorState
+    {
+
+    }
+
+    class AirBorn implements IActorState
+    {
+
+    }
+
+    actorController.ActorController *-d- IActorState
+}
+
+actorCollision.CollisionDetection *-- actorController.ActorController
+
+actorCollision.CollisionDetection -u-> Unity.BoxCollider2D
+
+
+
+/' ++++++++++ NOTES ++++++++++ '/
+/' --------- NOTES ----------- '/
+
+}
